@@ -36,16 +36,19 @@ jobs:
         with:
           command: build
           args: --target x86_64-unknown-linux-musl --release --all-features
+      
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: arn:aws:iam::682398359195:role/github_actions
           aws-region: us-east-1
+      
       - name: Login to AWS ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
         with:
           registry-type: public
+      
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -68,7 +71,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           file: Dockerfile
-          tags: ${{ steps.login-ecr.outputs.registry }}/clia/rcproxy:${{ steps.calver.outputs.release }},${{ steps.login-ecr.outputs.registry }}/clia/rcproxy:latest
+          tags: ${{ steps.login-ecr.outputs.registry }}/onebeat/clia/rcproxy:${{ steps.calver.outputs.release }},${{ steps.login-ecr.outputs.registry }}/onebeat/clia/rcproxy:latest
           cache-from: type=s3,region=us-east-1,bucket=onebeat-github-action-docker-cache,prefix=clia-rcproxy-
           cache-to: type=s3,region=us-east-1,bucket=onebeat-github-action-docker-cache,prefix=clia-rcproxy-
 
